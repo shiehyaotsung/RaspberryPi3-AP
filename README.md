@@ -20,6 +20,7 @@ sudo  bash RaspberryPi3-AP.sh   WiFi名稱   密碼  區域IP前3碼  區域IP�
 
 sudo  bash RaspberryPi3-AP.sh   R-Pi3   raspberry  172.18.1  100  160
 
+# ================================================================================================
 
 Download RaspberryPi3-AP.sh 
 
