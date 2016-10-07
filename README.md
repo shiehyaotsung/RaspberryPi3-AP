@@ -1,6 +1,7 @@
 # RaspberryPi3-AP
 
 下載 RaspberryPi3-AP.sh 到 RPi3，下載指令如下：
+
 wget  https://raw.githubusercontent.com/shiehyaotsung/RaspberryPi3-AP/master/RaspberryPi3-AP.sh
 
 執行安裝指令，格式如下：（密碼最少  8 碼）
