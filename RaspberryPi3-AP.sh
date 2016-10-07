@@ -98,8 +98,8 @@ sudo sed -i 's/exit 0/iptables-restore \< \/etc\/iptables.ipv4.nat\nexit 0/g' /e
 sudo service dnsmasq restart  
 sudo service hostapd restart 
 [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "等待 20 秒..."||echo "Waiting 20 seconds..."
-sleep 10
-ps aux | grep hostapd | grep -v grep || sleep 10; sudo service hostapd restart
+sleep 11
+ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
 # ==========================================================================
 ps aux | grep hostapd | grep -v grep  | grep hostapd
 ps aux | grep dnsmasq | grep -v grep | grep dnsmasq
