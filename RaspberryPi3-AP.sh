@@ -95,8 +95,10 @@ sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 sudo bash -c "iptables-save > /etc/iptables.ipv4.nat"
 sudo sed -i 's/exit 0/iptables-restore \< \/etc\/iptables.ipv4.nat\nexit 0/g' /etc/rc.local
 # ==========================================================================
-sudo service hostapd restart  
 sudo service dnsmasq restart  
+sudo service hostapd restart 
+sleep 10
+ps aux | grep hostapd | grep -v grep || sleep 10; sudo service hostapd restart
 # ==========================================================================
 ps aux | grep hostapd | grep -v grep  | grep hostapd
 ps aux | grep dnsmasq | grep -v grep | grep dnsmasq
