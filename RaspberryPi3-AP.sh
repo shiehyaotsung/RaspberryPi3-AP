@@ -93,13 +93,13 @@ function findAndDelLineAll {
     while ((1)) 
     do
         nn=$(egrep -n -m1 "^[[:space:]]*${2}[[:space:]]*$"  "${1}"|cut -d : -f 1)
-        ((nn>0))  &&   sed -i "${nn}d" "${1}" || return 0
+        ((nn>0))  &&   sudo sed -i "${nn}d" "${1}" || return 0
     done
  }
 # ==========================================================================
 function onlyOneAddBefore { 
     findAndDelLineAll  "${1}"  "${2}"
-    sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
+    sudo sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
  }
 # ==========================================================================
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
