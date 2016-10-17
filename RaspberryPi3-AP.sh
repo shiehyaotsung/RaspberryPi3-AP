@@ -89,11 +89,24 @@ EOF
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sudo bash -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 # ==========================================================================
+function findAndDelLineAll { 
+    while ((1)) 
+    do
+        nn=$(egrep -n -m1 "^[[:space:]]*${2}[[:space:]]*$"  "${1}"|cut -d : -f 1)
+        ((nn>0))  &&   sed -i "${nn}d" "${1}" || return 0
+    done
+ }
+# ==========================================================================
+function onlyOneAddBefore { 
+    findAndDelLineAll  "${1}"  "${2}"
+    sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
+ }
+# ==========================================================================
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT  
 sudo bash -c "iptables-save > /etc/iptables.ipv4.nat"
-sudo sed -i 's/exit 0/iptables-restore \< \/etc\/iptables.ipv4.nat\nexit 0/g' /etc/rc.local
+onlyOneAddBefore  rc.local  "iptables-restore < \/etc\/iptables.ipv4.nat"  "exit 0"
 # ==========================================================================
 sudo service dnsmasq restart  
 sudo service hostapd restart 
@@ -101,5 +114,5 @@ sudo service hostapd restart
 sleep 11
 ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
 # ==========================================================================
-ps aux | grep hostapd | grep -v grep  | grep hostapd
+ps aux | grep hostapd | grep -v grep | grep hostapd
 ps aux | grep dnsmasq | grep -v grep | grep dnsmasq
