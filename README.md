@@ -48,3 +48,8 @@ sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry
 or
 
 sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry  172.18.1  100  160
+
+
+After connect to AP , you can browse myrpi3:4567 or pi.rpi3.my:4567 and you will get your rPi3 IP . 
+
+
