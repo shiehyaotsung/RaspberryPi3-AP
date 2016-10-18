@@ -92,13 +92,13 @@ sudo bash -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 function findAndDelLineAll { 
     while ((1)) 
     do
-        nn=$(egrep -n -m1 "^[[:space:]]*${2}[[:space:]]*$"  "${1}"|cut -d : -f 1)
+        nn=$(egrep -n -m1 "${2}"  "${1}"|cut -d : -f 1)
         ((nn>0))  &&   sudo sed -i "${nn}d" "${1}" || return 0
     done
  }
 # ==========================================================================
 function onlyOneAddBefore { 
-    findAndDelLineAll  "${1}"  "${2}"
+    findAndDelLineAll  "${1}"  "^[[:space:]]*${2}[[:space:]]*$"
     sudo sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
  }
 # ==========================================================================
@@ -106,7 +106,33 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT  
 sudo bash -c "iptables-save > /etc/iptables.ipv4.nat"
-onlyOneAddBefore  /etc/rc.local  "iptables-restore < \/etc\/iptables.ipv4.nat"  "exit 0"
+onlyOneAddBefore  rc.local  "iptables-restore < \/etc\/iptables.ipv4.nat"  "exit 0"
+# ==========================================================================
+rpi3Url="myrpi3 pi.rpi3.my"
+rpi3shFile="/home/pi/rpi3.sh"
+rpi3shFileEsc="\/home\/pi\/rpi3.sh"
+pySvrStr="python -m SimpleHTTPServer 4567"
+myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+# ==================================
+sudo bash -c "cat > $rpi3shFile" <<EOF
+rpi3Url="myrpi3 pi.rpi3.my"
+pySvrStr="python -m SimpleHTTPServer 4567"
+EOF
+# ==============
+sudo bash -c "cat >> $rpi3shFile" <<"EOF"
+myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+nn=$(egrep -n -m1 "$rpi3Url"  "/etc/hosts"|cut -d : -f 1)
+((nn>0))  &&   sudo sed -i "${nn}d" "/etc/hosts" 
+bash -c "echo  $myip $rpi3Url >> /etc/hosts"
+service dnsmasq restart
+cd /home/pi
+[[ -d rPi3IP ]] || mkdir rPi3IP
+cd rPi3IP
+echo "<h1> rPi3 IP  :  $myip </h1>" > index.html
+$pySvrStr &>/dev/null &
+EOF
+# ==================================
+onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc"  "exit 0"
 # ==========================================================================
 sudo service dnsmasq restart  
 sudo service hostapd restart 
@@ -116,3 +142,6 @@ ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
 # ==========================================================================
 ps aux | grep hostapd | grep -v grep | grep hostapd
 ps aux | grep dnsmasq | grep -v grep | grep dnsmasq
+# ==========================================================================
+sudo bash $rpi3shFile
+# ==========================================================================
