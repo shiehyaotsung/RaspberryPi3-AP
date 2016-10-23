@@ -106,7 +106,7 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT  
 sudo bash -c "iptables-save > /etc/iptables.ipv4.nat"
-onlyOneAddBefore  rc.local  "iptables-restore < \/etc\/iptables.ipv4.nat"  "exit 0"
+onlyOneAddBefore  /etc/rc.local  "iptables-restore < \/etc\/iptables.ipv4.nat"  "exit 0"
 # ==========================================================================
 rpi3Url="myrpi3 pi.rpi3.my"
 rpi3shFile="/home/pi/rpi3.sh"
@@ -115,8 +115,8 @@ pySvrStr="python -m SimpleHTTPServer 4567"
 myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 # ==================================
 sudo bash -c "cat > $rpi3shFile" <<EOF
-rpi3Url="myrpi3 pi.rpi3.my"
-pySvrStr="python -m SimpleHTTPServer 4567"
+rpi3Url="$rpi3Url"
+pySvrStr="$pySvrStr"
 EOF
 # ==============
 sudo bash -c "cat >> $rpi3shFile" <<"EOF"
