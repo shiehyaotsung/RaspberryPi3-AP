@@ -102,6 +102,9 @@ function onlyOneAddBefore {
     sudo sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
  }
 # ==========================================================================
+sudo sed -i 's/# Make sure that the script will "iptables-restore < \/etc\/iptables.ipv4.nat/# Make sure that the script will "exit 0" on success or any other/' /etc/rc.local
+findAndDelLineAll  "/etc/rc.local"  "^exit 0\" on success or any other$"
+# ==========================================================================
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
 sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT  
