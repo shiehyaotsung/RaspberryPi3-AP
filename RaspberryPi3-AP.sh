@@ -3,7 +3,7 @@
 if [ $(cat /etc/issue | awk '{print $1}') != "Raspbian" ]
 then 
         [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "您的作業系統不是 Raspbian 。"||echo "Your operating system is not Raspbian."
-        return 9;
+        exit 9
 fi
 # ==========================================================================
 newfile=$(echo RaspberryPi3-AP.sh.* | awk '{print $(NF)}')
@@ -33,7 +33,7 @@ if [[ $# -lt 2 ]]; then
         echo "sudo  $0   WiFiName   password  localIP  from  to"
         echo "sudo  $0   R-Pi3   raspberry  172.18.1  100  160"
     fi
-    exit
+    exit 2
 fi
 # ==========================================================================
 wifi_ID="$1"
@@ -149,7 +149,7 @@ service dnsmasq restart
 cd /home/pi
 [[ -d rPi3IP ]] || mkdir rPi3IP
 cd rPi3IP
-echo "<h1> rPi3 IP  :  $myip </h1>" > index.html
+echo "<h1> rPi3 IP :<br>$myip </h1>" > index.html
 $pySvrStr &>/dev/null &
 EOF
 # ==================================
