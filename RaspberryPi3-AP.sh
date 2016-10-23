@@ -155,7 +155,7 @@ $pySvrStr &>/dev/null &
 EOF
 # ==================================
 findAndDelLineAll  /etc/rc.local  "bash $rpi3shFileEsc"
-onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc &"  "exit 0"
+onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc "  "exit 0"
 # ==========================================================================
 sudo service dnsmasq restart  
 sudo service hostapd restart 
