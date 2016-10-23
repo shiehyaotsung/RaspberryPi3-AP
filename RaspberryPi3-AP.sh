@@ -10,7 +10,7 @@ newfile=$(echo RaspberryPi3-AP.sh.* | awk '{print $(NF)}')
 if [ "$0" == "RaspberryPi3-AP.sh" ] && [ -n "$newfile" ] && [ "$newfile" -nt "RaspberryPi3-AP.sh" ]
 then 
         [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "您目錄裏的 $newfile 比較新，請確認 $0 是您要執行的版本。"||echo "$newfile in your directory is newer. Make sure $0 is the version you want to run."
-        sleep  5
+        exit 5
 fi
 # ==========================================================================
 if [ "$EUID" -ne 0 ]
@@ -149,7 +149,8 @@ service dnsmasq restart
 cd /home/pi
 [[ -d rPi3IP ]] || mkdir rPi3IP
 cd rPi3IP
-echo "<h1> rPi3 IP :<br>$myip </h1>" > index.html
+echo "<h1> rPi3 IP :<br>$myip </h1><br>Got IP time:" > index.html
+date >> index.html
 $pySvrStr &>/dev/null &
 EOF
 # ==================================
