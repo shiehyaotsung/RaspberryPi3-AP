@@ -101,9 +101,9 @@ function onlyOneAddBefore {
     findAndDelLineAll  "${1}"  "^[[:space:]]*${2}[[:space:]]*$"
     sudo sed -i "s/^[[:space:]]*${3}[[:space:]]*$/${2}\n${3}/g"  "${1}"
  }
-# ==========================================================================
+# ====================================================== Fix the previous error ===
 sudo sed -i 's/# Make sure that the script will "iptables-restore < \/etc\/iptables.ipv4.nat/# Make sure that the script will "exit 0" on success or any other/' /etc/rc.local
-findAndDelLineAll  "/etc/rc.local"  "^exit 0\" on success or any other$"
+findAndDelLineAll  /etc/rc.local  "^exit 0\" on success or any other$"
 # ==========================================================================
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
@@ -123,6 +123,11 @@ pySvrStr="$pySvrStr"
 EOF
 # ==============
 sudo bash -c "cat >> $rpi3shFile" <<"EOF"
+while ((1))
+  do 
+      [[ "$(hostname -I)" != "172.18.1.1 " ]] && break; 
+      sleep 1; 
+  done
 myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 nn=$(egrep -n -m1 "$rpi3Url"  "/etc/hosts"|cut -d : -f 1)
 ((nn>0))  &&   sudo sed -i "${nn}d" "/etc/hosts" 
@@ -135,7 +140,8 @@ echo "<h1> rPi3 IP  :  $myip </h1>" > index.html
 $pySvrStr &>/dev/null &
 EOF
 # ==================================
-onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc"  "exit 0"
+findAndDelLineAll  /etc/rc.local  "bash $rpi3shFileEsc"
+onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc &"  "exit 0"
 # ==========================================================================
 sudo service dnsmasq restart  
 sudo service hostapd restart 
