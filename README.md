@@ -21,11 +21,16 @@ sudo  bash RaspberryPi3-AP.sh   WiFi名稱   密碼  區域IP前3碼  區域IP�
 sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry  172.18.1  100  160
 
 假設依範例成功執行之後，可用手機連上 wifi 帳號 rPi3 ，密碼 raspberry
-用 google 上 myrpi3:4567 或 pi.rpi3.my:4567 的網頁你將看到 rPi3 IP : 192.168.1.105
-你就可以用 putty 或 ssh 登入你的 rPi3 。
-你的 arduino 也可以連上這 AP ，用 myrpi3 或 pi.rpi3.my 作為網址，將資料傳給你在 rPi3 的 IoT server 。
+
+在瀏覽器的網址輸入：myrpi3:4567 或 pi.rpi3.my:4567，您將看到您的 rPi3 的 IP ，
+
+您就可以用 putty 或 ssh 登入您的 rPi3 。
+
+您的 arduino 也可以連上這 AP ，用 myrpi3 或 pi.rpi3.my 作為網址，將資料傳給你在 rPi3 的 IoT server 。
+
 即使你 rPi3 的 IP 改變了，你也不須修改 arduino 程式裏的 IP 。
-# ========================================================================================
+
+# ============================================
 
 Download RaspberryPi3-AP.sh 
 
@@ -50,6 +55,9 @@ or
 sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry  172.18.1  100  160
 
 
-After connect to AP , you can browse myrpi3:4567 or pi.rpi3.my:4567 and you will get your rPi3 IP . 
 
+After connect to this rPi3 AP , you can browse myrpi3:4567 or pi.rpi3.my:4567 and you will get your rPi3 IP. 
 
+If your arduino connects to this rPi3 AP, you can use "myrpi3" or "pi.rpi3.my" as the URL to pass data to the IoT server residing in this rPi3.
+
+Even if your rPi3 IP changes, you do not need to modify the IP in the arduino program.
