@@ -1,5 +1,18 @@
 #!/bin/bash
 # ==========================================================================
+if [ $(cat /etc/issue | awk '{print $1}') != "Raspbian" ]
+then 
+        [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "您的作業系統不是 Raspbian 。"||echo "Your operating system is not Raspbian."
+        return 9;
+fi
+# ==========================================================================
+newfile=$(echo RaspberryPi3-AP.sh.* | awk '{print $(NF)}')
+if [ "$0" == "RaspberryPi3-AP.sh" ] && [ -n "$newfile" ] && [ "$newfile" -nt "RaspberryPi3-AP.sh" ]
+then 
+        [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "您目錄裏的 $newfile 比較新，請確認 $0 是您要執行的版本。"||echo "$newfile in your directory is newer. Make sure $0 is the version you want to run."
+        sleep  5
+fi
+# ==========================================================================
 if [ "$EUID" -ne 0 ]
     then [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "必須是 root, 會自動使用sudo"||echo "Must be root, so use sudo automatically."
 fi
