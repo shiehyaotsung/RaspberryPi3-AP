@@ -138,10 +138,9 @@ EOF
 sudo bash -c "cat >> $rpi3shFile" <<"EOF"
 while ((1))
   do 
-      [[ "$(hostname -I)" != "172.18.1.1 " ]] && break; 
-      sleep 1; 
+      myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+      ([[ -z $myip ]] || [[ "$myip" =~ 169.254.+ ]]) && sleep 1 || break
   done
-myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 nn=$(egrep -n -m1 "$rpi3Url"  "/etc/hosts"|cut -d : -f 1)
 ((nn>0))  &&   sudo sed -i "${nn}d" "/etc/hosts" 
 bash -c "echo  $myip $rpi3Url >> /etc/hosts"
