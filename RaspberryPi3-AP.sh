@@ -64,9 +64,20 @@ if [[ $? -eq 0 ]]; then
    fi
    egrep "^[[:space:]]*wpa-conf \/etc\/wpa_supplicant\/wpa_supplicant.conf" /etc/network/interfaces > /dev/null && \
         sudo sed -i 's/^[[:space:]]*wpa-conf \/etc\/wpa_supplicant\/wpa_supplicant.conf/# wpa-conf \/etc\/wpa_supplicant\/wpa_supplicant.conf/' /etc/network/interfaces
+else
+
+   sudo bash -c "cat >> /etc/network/interfaces" <<EOF
+allow-hotplug wlan0  
+iface wlan0 inet static  
+    address ${LocalIP}.1
+    netmask 255.255.255.0
+    network ${LocalIP}.0
+    broadcast ${LocalIP}.255
+EOF
+
 fi
 # ==========================================================================
-sudo service dhcpcd restart
+sudo systemctl restart dhcpcd  # sudo service dhcpcd restart
 sudo ifdown wlan0; sudo ifup wlan0
 # ==========================================================================
 sudo sed -i 's/#DAEMON_CONF=""/DAEMON_CONF="\/etc\/hostapd\/hostapd.conf"/'  /etc/default/hostapd
@@ -136,34 +147,36 @@ pySvrStr="$pySvrStr"
 EOF
 # ==============
 sudo bash -c "cat >> $rpi3shFile" <<"EOF"
-while ((1))
+cnt=10
+while ((cnt--))
   do 
-      myip=$(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+      myip=$(ifconfig eth0 | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
       ([[ -z $myip ]] || [[ "$myip" =~ 169.254.+ ]]) && sleep 1 || break
   done
 nn=$(egrep -n -m1 "$rpi3Url"  "/etc/hosts"|cut -d : -f 1)
 ((nn>0))  &&   sudo sed -i "${nn}d" "/etc/hosts" 
-bash -c "echo  $myip $rpi3Url >> /etc/hosts"
-service dnsmasq restart
+hostip=$(ifconfig wlan0 | sed -En 's/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+bash -c "echo  ${hostip} $rpi3Url >> /etc/hosts"
+systemctl restart dnsmasq  # service dnsmasq restart
 cd /home/pi
 [[ -d rPi3IP ]] || mkdir rPi3IP
 cd rPi3IP
 echo "<h1> rPi3 IP :<br>$myip </h1><br>Got IP time:" > index.html
-date >> index.html
+date "+%Y-%m-%d %T" >> index.html
 $pySvrStr &>/dev/null &
 EOF
 # ==================================
 findAndDelLineAll  /etc/rc.local  "bash $rpi3shFileEsc"
 onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc \&"  "exit 0"
 # ==========================================================================
-sudo service dnsmasq restart  
-sudo service hostapd restart 
+sudo systemctl restart dnsmasq  # sudo service dnsmasq restart  
+sudo systemctl restart hostapd  # sudo service hostapd restart 
 [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "等待 20 秒..."||echo "Waiting 20 seconds..."
 sleep 11
-ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
+pidof hostapd || sudo systemctl restart hostapd  # ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
 # ==========================================================================
-ps aux | grep hostapd | grep -v grep | grep hostapd
-ps aux | grep dnsmasq | grep -v grep | grep dnsmasq
+ps aux | grep [h]ostapd
+ps aux | grep [d]nsmasq
 # ==========================================================================
 sudo bash $rpi3shFile
 # ==========================================================================
