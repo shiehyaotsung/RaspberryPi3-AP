@@ -30,6 +30,8 @@ sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry  172.18.1  100  160
 
 即使你 rPi3 的 IP 改變了，你也不須修改 arduino 程式裏的 IP 。
 
+2018-02-21 修改  是因應 Debian 2017年的新版本 Stretch，且相容於 Jessie版。
+
 # ============================================
 
 Download RaspberryPi3-AP.sh 
