@@ -67,6 +67,9 @@ if [[ $? -eq 0 ]]; then
 else
 
    sudo bash -c "cat >> /etc/network/interfaces" <<EOF
+auto lo eth0
+iface lo inet loopback
+iface eth0 inet dhcp
 allow-hotplug wlan0  
 iface wlan0 inet static  
     address ${LocalIP}.1
