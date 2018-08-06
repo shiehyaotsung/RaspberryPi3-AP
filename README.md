@@ -1,5 +1,9 @@
 # Raspberry Pi3 - AP
 
+請確認已設好 rpi3 的時區及 Wi-Fi country
+   可用 sudo raspi-config 選 Localisation Options 然後再分別選用  Change Timezone 及 Change Wi-Fi Country 
+   設定 rpi3 的時區 及 Wi-Fi 國家
+
 下載 RaspberryPi3-AP.sh 到 rPi3，下載指令如下：
 
 wget  https://raw.githubusercontent.com/shiehyaotsung/RaspberryPi3-AP/master/RaspberryPi3-AP.sh
@@ -33,6 +37,8 @@ sudo  bash RaspberryPi3-AP.sh   rPi3   raspberry  172.18.1  100  160
 2018-02-21 修改  是因應 Debian 2017年的新版本 Stretch，且相容於 Jessie版。
 
 # ============================================
+
+You must setup Timezone and Wi-Fi Country.
 
 Download RaspberryPi3-AP.sh 
 
