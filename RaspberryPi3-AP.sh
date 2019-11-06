@@ -174,10 +174,16 @@ findAndDelLineAll  /etc/rc.local  "bash $rpi3shFileEsc"
 onlyOneAddBefore  /etc/rc.local  "bash $rpi3shFileEsc \&"  "exit 0"
 # ==========================================================================
 sudo systemctl restart dnsmasq  # sudo service dnsmasq restart  
-sudo systemctl restart hostapd  # sudo service hostapd restart 
+sudo systemctl restart hostapd
+pidof hostapd 
+if (( $?!= 0 )); then
+     sudo systemctl unmask hostapd
+     sudo systemctl enable hostapd
+     sudo systemctl start hostapd
+fi
 [ "$LC_TIME" = "zh_TW.UTF-8" ]&& echo "等待 20 秒..."||echo "Waiting 20 seconds..."
 sleep 11
-pidof hostapd || sudo systemctl restart hostapd  # ps aux | grep hostapd | grep -v grep || sudo service hostapd restart
+pidof hostapd || sudo systemctl restart hostapd  
 # ==========================================================================
 ps aux | grep [h]ostapd
 ps aux | grep [d]nsmasq
