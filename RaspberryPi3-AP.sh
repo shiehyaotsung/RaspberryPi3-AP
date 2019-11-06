@@ -42,7 +42,8 @@ LocalIP=${3:-'172.18.1'}
 LocalIPfrom=${4:-100}
 LocalIPto=${5:-160}
 # ==========================================================================
-sudo apt-get install dnsmasq hostapd
+sudo apt update  
+sudo apt install dnsmasq hostapd
 # ==========================================================================
 grep 'denyinterfaces wlan0' /etc/dhcpcd.conf  &> /dev/null
 (($?==0))  || echo 'denyinterfaces wlan0' >> /etc/dhcpcd.conf
